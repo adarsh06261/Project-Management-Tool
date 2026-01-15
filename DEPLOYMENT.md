@@ -30,15 +30,20 @@
 
 ### 1. Backend Deployment (Railway/Render/Railway)
 
-**Option A: Railway**
+**Option A: Railway (Recommended)**
 1. Go to [railway.app](https://railway.app)
 2. New Project → Deploy from GitHub
 3. Select your repository
-4. Add PostgreSQL service
-5. Set environment variables:
+4. **Important:** Set Root Directory to `backend` in the service settings
+5. Add PostgreSQL service
+6. Set environment variables:
    - `DATABASE_URL` (auto-set from PostgreSQL service)
    - `PORT` (optional, defaults to 5001)
-6. Deploy
+   - `FRONTEND_URL` = `https://your-frontend-url.vercel.app` (set after frontend is deployed)
+7. Railway will auto-detect the build (uses `railway.json` and `Procfile`)
+8. After deployment, run migrations and seed:
+   - Go to your service → Deployments → Latest → View Logs
+   - Or use Railway CLI: `railway run npm run migrate:deploy && railway run npm run seed`
 
 **Option B: Render**
 1. Go to [render.com](https://render.com)
@@ -63,14 +68,15 @@ npm run seed
 
 ### 2. Frontend Deployment (Vercel/Netlify)
 
-**Option A: Vercel**
+**Option A: Vercel (Recommended)**
 1. Go to [vercel.com](https://vercel.com)
 2. Import Project → GitHub
-3. Select repository
-4. Framework Preset: Vite
-5. Environment Variables:
-   - `VITE_API_URL` = `https://your-backend-url.com`
-6. Deploy
+3. Select your repository
+4. **Important:** Set Root Directory to `frontend` in project settings
+5. Framework Preset: Vite (auto-detected from `vercel.json`)
+6. Environment Variables:
+   - `VITE_API_URL` = `https://your-backend-url.railway.app` (use your Railway backend URL)
+7. Deploy
 
 **Option B: Netlify**
 1. Go to [netlify.com](https://netlify.com)
@@ -82,16 +88,9 @@ npm run seed
    - `VITE_API_URL` = `https://your-backend-url.com`
 5. Deploy
 
-### 3. Update CORS (if needed)
+### 3. Update CORS (Already Configured ✅)
 
-If your backend and frontend are on different domains, ensure CORS is properly configured in `backend/src/index.js`:
-
-```javascript
-app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
-  credentials: true
-}));
-```
+CORS is already configured in `backend/src/index.js` to use the `FRONTEND_URL` environment variable. Make sure to set this in your backend deployment after you have your frontend URL.
 
 ## Post-Deployment
 
