@@ -80,7 +80,7 @@ export default function App() {
         <h2>Error loading board</h2>
         <p style={{ marginTop: 10 }}>{error}</p>
         <p style={{ marginTop: 10, fontSize: "14px" }}>
-          Make sure the backend server is running on http://localhost:5001
+          Make sure the backend server is running and accessible.
         </p>
       </div>
     );
