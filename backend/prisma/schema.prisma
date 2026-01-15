@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Board {
+  id    Int    @id @default(autoincrement())
+  title String
+  lists List[]
+}
+
+model List {
+  id       Int    @id @default(autoincrement())
+  title    String
+  position Int
+  boardId  Int
+  board    Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards    Card[]
+}
+
+model Card {
+  id             Int             @id @default(autoincrement())
+  title          String
+  description    String?
+  position       Int
+  dueDate        DateTime?
+  archived       Boolean         @default(false)
+  listId         Int
+  list           List            @relation(fields: [listId], references: [id], onDelete: Cascade)
+  labels         CardLabel[]
+  checklistItems ChecklistItem[]
+  cardMembers    CardMember[]
+}
+
+model Label {
+  id    Int         @id @default(autoincrement())
+  name  String
+  color String
+  cards CardLabel[]
+}
+
+model CardLabel {
+  id      Int   @id @default(autoincrement())
+  cardId  Int
+  labelId Int
+  card    Card  @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  label   Label @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  @@unique([cardId, labelId])
+}
+
+model ChecklistItem {
+  id        Int     @id @default(autoincrement())
+  title     String
+  completed Boolean @default(false)
+  position  Int
+  cardId    Int
+  card      Card    @relation(fields: [cardId], references: [id], onDelete: Cascade)
+}
+
+model Member {
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String
+  avatar      String?
+  cardMembers CardMember[]
+}
+
+model CardMember {
+  id       Int    @id @default(autoincrement())
+  cardId   Int
+  memberId Int
+  card     Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([cardId, memberId])
+}
