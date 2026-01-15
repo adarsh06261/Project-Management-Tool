@@ -16,7 +16,9 @@ export function useBoard(boardId) {
       })
       .catch(err => {
         console.error("Error fetching board:", err);
-        setError(err.message || "Failed to load board");
+        console.error("API URL being used:", import.meta.env.VITE_API_URL || "http://localhost:5001");
+        console.error("Full error:", err.response?.data || err.message);
+        setError(err.message || "Network Error");
         setLoading(false);
       });
   }, [boardId]);
