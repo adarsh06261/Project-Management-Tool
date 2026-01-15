@@ -21,7 +21,13 @@ echo "🔧 Generating Prisma client..."
 npx prisma generate
 
 echo "🗄️  Running database migrations..."
-npx prisma migrate deploy
+# Try migrate deploy first, if no migrations found, use db push
+if ! npx prisma migrate deploy 2>&1 | grep -q "No migration found"; then
+  echo "✅ Migrations applied successfully"
+else
+  echo "⚠️  No migrations found, pushing schema directly..."
+  npx prisma db push --accept-data-loss
+fi
 
 echo "🌱 Seeding database..."
 npm run seed

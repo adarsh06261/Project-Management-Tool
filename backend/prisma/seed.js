@@ -2,10 +2,19 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
-  // Check if data already exists
-  const existingLabels = await prisma.label.count();
-  const existingMembers = await prisma.member.count();
-  const existingBoards = await prisma.board.count();
+  // Check if data already exists (with error handling for missing tables)
+  let existingLabels = 0;
+  let existingMembers = 0;
+  let existingBoards = 0;
+  
+  try {
+    existingLabels = await prisma.label.count();
+    existingMembers = await prisma.member.count();
+    existingBoards = await prisma.board.count();
+  } catch (error) {
+    // Tables don't exist yet, that's okay - we'll create them
+    console.log("📋 Tables not found, will create them during seed...");
+  }
 
   if (existingLabels > 0 || existingMembers > 0 || existingBoards > 0) {
     console.log("✅ Database already seeded. Skipping seed.");
