@@ -25,6 +25,19 @@ app.get("/", (req, res) => {
   res.send("Backend is running");
 });
 
+// Health check endpoint
+app.get("/health", async (req, res) => {
+  try {
+    // Test database connection
+    const prisma = require("./prisma");
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: "ok", database: "connected" });
+  } catch (error) {
+    console.error("Health check failed:", error);
+    res.status(503).json({ status: "error", database: "disconnected", error: error.message });
+  }
+});
+
 app.use("/boards", boardRoutes);
 app.use("/lists", listRoutes);
 app.use("/cards", cardRoutes);
