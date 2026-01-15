@@ -2,6 +2,18 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
+  // Check if data already exists
+  const existingLabels = await prisma.label.count();
+  const existingMembers = await prisma.member.count();
+  const existingBoards = await prisma.board.count();
+
+  if (existingLabels > 0 || existingMembers > 0 || existingBoards > 0) {
+    console.log("✅ Database already seeded. Skipping seed.");
+    return;
+  }
+
+  console.log("🌱 Starting database seed...");
+
   // Create labels
   const labels = await Promise.all([
     prisma.label.create({ data: { name: "Frontend", color: "#61bd4f" } }),
@@ -126,9 +138,10 @@ async function main() {
     },
   });
 
-  console.log("Seeded board:", board.id);
-  console.log("Created", labels.length, "labels");
-  console.log("Created", members.length, "members");
+  console.log("✅ Seeded board:", board.id);
+  console.log("✅ Created", labels.length, "labels");
+  console.log("✅ Created", members.length, "members");
+  console.log("🎉 Database seeding completed successfully!");
 }
 
 main()
