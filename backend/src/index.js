@@ -27,7 +27,7 @@ app.use("/labels", labelRoutes);
 app.use("/checklist", checklistRoutes);
 app.use("/members", memberRoutes);
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5001; // Render uses PORT env var (set to 10000 in render.yaml)
 
 app.listen(PORT, () => {
   console.log(`Backend running on http://localhost:${PORT}`);
