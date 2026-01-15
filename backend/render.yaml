@@ -2,7 +2,7 @@ services:
   - type: web
     name: trello-backend
     env: node
-    buildCommand: chmod +x build.sh && ./build.sh
+    buildCommand: npm install && npx prisma generate && npx prisma db push --accept-data-loss --skip-generate && npm run seed
     startCommand: npm start
     envVars:
       - key: NODE_ENV
