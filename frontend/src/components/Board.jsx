@@ -33,7 +33,9 @@ function SortableList({ list, onCardClick, onAddCard, onUpdateList, onDeleteList
       {...listeners}
       onMouseDown={(e) => {
         // Don't allow dragging if clicking on cards, inputs, buttons, or list title
-        if (e.target.closest('[data-card-container]') || 
+        // But allow dragging from empty space in the list
+        if (e.target.closest('[data-card]') || 
+            e.target.closest('[data-sortable]') ||
             e.target.closest('input, button') ||
             e.target.closest('h4')) {
           e.stopPropagation();

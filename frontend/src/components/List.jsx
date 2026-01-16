@@ -44,6 +44,7 @@ export default function List({ list, onAddCard, onCardClick, onUpdateList, onDel
         display: "flex",
         flexDirection: "column",
         flexShrink: 0,
+        position: "relative",
       }}
     >
       {/* List Header */}
@@ -114,10 +115,18 @@ export default function List({ list, onAddCard, onCardClick, onUpdateList, onDel
       {/* Cards */}
       <div 
         data-card-container={true}
-        style={{ flex: 1, overflowY: "auto", marginBottom: 8 }}
+        style={{ 
+          flex: 1, 
+          overflowY: "auto", 
+          marginBottom: 8,
+          position: "relative",
+        }}
         onMouseDown={(e) => {
-          // Stop card container clicks from triggering list drag
-          e.stopPropagation();
+          // Only stop propagation if clicking directly on a card
+          // Allow list drag from empty space in card container
+          if (e.target.closest('[data-card]') || e.target.closest('[data-sortable]')) {
+            e.stopPropagation();
+          }
         }}
       >
         <SortableContext

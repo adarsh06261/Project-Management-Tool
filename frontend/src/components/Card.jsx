@@ -36,6 +36,12 @@ export default function Card({ card, onClick }) {
       {...attributes}
       {...listeners}
       onClick={onClick}
+      data-card={card.id}
+      data-sortable={true}
+      onMouseDown={(e) => {
+        // Stop card drag from triggering list drag
+        e.stopPropagation();
+      }}
     >
       {/* Labels */}
       {labels.length > 0 && (
