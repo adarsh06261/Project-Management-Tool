@@ -17,8 +17,11 @@ function SortableList({ list, onCardClick, onAddCard, onUpdateList, onDeleteList
     isDragging,
   } = useSortable({ id: list.id });
 
+  const baseTransform = CSS.Transform.toString(transform);
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: isDragging 
+      ? `${baseTransform} rotate(2deg)` 
+      : baseTransform,
     transition: transition || undefined,
     opacity: isDragging ? 0.6 : 1,
     cursor: isDragging ? 'grabbing' : 'grab',
@@ -26,9 +29,6 @@ function SortableList({ list, onCardClick, onAddCard, onUpdateList, onDeleteList
     boxShadow: isDragging 
       ? '0 8px 16px rgba(0,0,0,0.3), 0 0 0 2px #0079bf' 
       : '0 1px 3px rgba(0,0,0,0.12)',
-    transform: isDragging 
-      ? `${CSS.Transform.toString(transform)} rotate(2deg)` 
-      : CSS.Transform.toString(transform),
   };
 
   return (
