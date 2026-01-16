@@ -74,13 +74,15 @@ exports.reorderLists = async (req, res) => {
       }
       
       try {
-        await prisma.list.update({
+        const updated = await prisma.list.update({
           where: { id: list.id },
           data: { position: index + 1 }
         });
+        console.log(`Successfully updated list ${list.id} to position ${index + 1}`);
         updates.push(list.id);
       } catch (updateError) {
         console.error(`Error updating list ${list.id}:`, updateError);
+        console.error(`Error code: ${updateError.code}, message: ${updateError.message}`);
         // Continue with other updates even if one fails
       }
     }
