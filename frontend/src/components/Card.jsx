@@ -12,9 +12,7 @@ export default function Card({ card, onClick }) {
   } = useSortable({ id: card.id });
 
   const style = {
-    transform: isDragging 
-      ? `${CSS.Transform.toString(transform)} rotate(3deg) scale(1.05)` 
-      : CSS.Transform.toString(transform),
+    transform: CSS.Transform.toString(transform),
     transition: isDragging ? undefined : transition,
     background: "white",
     padding: 12,
@@ -22,11 +20,10 @@ export default function Card({ card, onClick }) {
     marginBottom: 8,
     cursor: isDragging ? "grabbing" : "grab",
     boxShadow: isDragging 
-      ? "0 8px 16px rgba(0,0,0,0.4), 0 0 0 2px #0079bf" 
+      ? "0 4px 8px rgba(0,0,0,0.3)" 
       : "0 1px 3px rgba(0,0,0,0.12)",
-    opacity: isDragging ? 0.8 : 1,
+    opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 1000 : 1,
-    border: isDragging ? "2px solid #0079bf" : "1px solid transparent",
     userSelect: "none",
   };
 

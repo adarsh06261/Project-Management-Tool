@@ -17,18 +17,12 @@ function SortableList({ list, onCardClick, onAddCard, onUpdateList, onDeleteList
     isDragging,
   } = useSortable({ id: list.id });
 
-  const baseTransform = CSS.Transform.toString(transform);
   const style = {
-    transform: isDragging 
-      ? `${baseTransform} rotate(2deg)` 
-      : baseTransform,
-    transition: transition || undefined,
-    opacity: isDragging ? 0.6 : 1,
+    transform: CSS.Transform.toString(transform),
+    transition: isDragging ? undefined : transition,
+    opacity: isDragging ? 0.5 : 1,
     cursor: isDragging ? 'grabbing' : 'grab',
     zIndex: isDragging ? 1000 : 1,
-    boxShadow: isDragging 
-      ? '0 8px 16px rgba(0,0,0,0.3), 0 0 0 2px #0079bf' 
-      : '0 1px 3px rgba(0,0,0,0.12)',
   };
 
   return (
@@ -284,28 +278,12 @@ export default function Board({ board, onBoardUpdate }) {
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
-          onDragStart={(event) => {
-            // Add visual feedback when drag starts
-            document.body.style.cursor = 'grabbing';
-          }}
           onDragEnd={(event) => {
-            document.body.style.cursor = '';
             const isList = lists.some((l) => l.id === event.active.id);
             if (isList) {
               handleListDragEnd(event);
             } else {
               handleCardDragEnd(event);
-            }
-          }}
-          onDragOver={(event) => {
-            // Add hover effect on drop zones
-            const overElement = event.over;
-            if (overElement) {
-              const element = document.querySelector(`[data-id="${overElement.id}"]`);
-              if (element) {
-                element.style.backgroundColor = 'rgba(0, 121, 191, 0.1)';
-                element.style.borderRadius = '8px';
-              }
             }
           }}
         >
