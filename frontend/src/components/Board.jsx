@@ -323,6 +323,35 @@ export default function Board({ board, onBoardUpdate }) {
             ))}
           </SortableContext>
 
+          <DragOverlay>
+            {activeId ? (() => {
+              const isList = lists.some((l) => l.id === activeId);
+              if (isList) {
+                const list = lists.find((l) => l.id === activeId);
+                return list ? (
+                  <div style={{ width: 272, minWidth: 272, opacity: 0.9 }}>
+                    <List list={list} onCardClick={() => {}} onAddCard={() => {}} onUpdateList={() => {}} onDeleteList={() => {}} />
+                  </div>
+                ) : null;
+              } else {
+                // Find the card
+                let card = null;
+                for (const list of lists) {
+                  const foundCard = list.cards.find((c) => c.id === activeId);
+                  if (foundCard) {
+                    card = foundCard;
+                    break;
+                  }
+                }
+                return card ? (
+                  <div style={{ width: 256, opacity: 0.9 }}>
+                    <Card card={card} onClick={() => {}} />
+                  </div>
+                ) : null;
+              }
+            })() : null}
+          </DragOverlay>
+
           {/* Add List Button */}
           {!showAddList ? (
             <button
