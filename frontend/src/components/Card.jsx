@@ -19,11 +19,8 @@ export default function Card({ card, onClick }) {
     borderRadius: 8,
     marginBottom: 8,
     cursor: isDragging ? "grabbing" : "grab",
-    boxShadow: isDragging 
-      ? "0 4px 8px rgba(0,0,0,0.3)" 
-      : "0 1px 3px rgba(0,0,0,0.12)",
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 1000 : 1,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12)",
+    opacity: isDragging ? 0.3 : 1,
     userSelect: "none",
   };
 

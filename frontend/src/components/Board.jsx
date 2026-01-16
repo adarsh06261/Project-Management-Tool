@@ -1,9 +1,10 @@
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragOverlay } from "@dnd-kit/core";
 import { SortableContext, horizontalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import List from "./List";
 import CardModal from "./CardModal";
+import Card from "./Card";
 import { api } from "../api/api";
 import { useState, useEffect } from "react";
 
@@ -20,9 +21,8 @@ function SortableList({ list, onCardClick, onAddCard, onUpdateList, onDeleteList
   const style = {
     transform: CSS.Transform.toString(transform),
     transition: isDragging ? undefined : transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0.3 : 1,
     cursor: isDragging ? 'grabbing' : 'grab',
-    zIndex: isDragging ? 1000 : 1,
   };
 
   return (
@@ -55,6 +55,7 @@ export default function Board({ board, onBoardUpdate }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddList, setShowAddList] = useState(false);
   const [newListTitle, setNewListTitle] = useState("");
+  const [activeId, setActiveId] = useState(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -278,13 +279,20 @@ export default function Board({ board, onBoardUpdate }) {
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
+          onDragStart={(event) => {
+            setActiveId(event.active.id);
+          }}
           onDragEnd={(event) => {
+            setActiveId(null);
             const isList = lists.some((l) => l.id === event.active.id);
             if (isList) {
               handleListDragEnd(event);
             } else {
               handleCardDragEnd(event);
             }
+          }}
+          onDragCancel={() => {
+            setActiveId(null);
           }}
         >
           <div
