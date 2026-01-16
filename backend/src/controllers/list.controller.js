@@ -1,50 +1,74 @@
 const prisma = require("../prisma");
 
 exports.createList = async (req, res) => {
-  const { title, boardId } = req.body;
+  try {
+    const { title, boardId } = req.body;
 
-  const count = await prisma.list.count({ where: { boardId } });
+    const count = await prisma.list.count({ where: { boardId } });
 
-  const list = await prisma.list.create({
-    data: {
-      title,
-      boardId,
-      position: count + 1
-    }
-  });
+    const list = await prisma.list.create({
+      data: {
+        title,
+        boardId,
+        position: count + 1
+      }
+    });
 
-  res.json(list);
+    res.json(list);
+  } catch (error) {
+    console.error("Error creating list:", error);
+    res.status(500).json({ error: "Failed to create list" });
+  }
 };
 
 exports.updateList = async (req, res) => {
-  const id = parseInt(req.params.id);
-  const { title } = req.body;
+  try {
+    const id = parseInt(req.params.id);
+    const { title } = req.body;
 
-  const list = await prisma.list.update({
-    where: { id },
-    data: { title }
-  });
+    const list = await prisma.list.update({
+      where: { id },
+      data: { title }
+    });
 
-  res.json(list);
+    res.json(list);
+  } catch (error) {
+    console.error("Error updating list:", error);
+    res.status(500).json({ error: "Failed to update list" });
+  }
 };
 
 exports.deleteList = async (req, res) => {
-  const id = parseInt(req.params.id);
+  try {
+    const id = parseInt(req.params.id);
 
-  await prisma.list.delete({ where: { id } });
-  res.json({ success: true });
+    await prisma.list.delete({ where: { id } });
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting list:", error);
+    res.status(500).json({ error: "Failed to delete list" });
+  }
 };
 
 exports.reorderLists = async (req, res) => {
-  const { lists } = req.body;
+  try {
+    const { lists } = req.body;
 
-  const updates = lists.map((list, index) =>
-    prisma.list.update({
-      where: { id: list.id },
-      data: { position: index + 1 }
-    })
-  );
+    if (!lists || !Array.isArray(lists)) {
+      return res.status(400).json({ error: "Lists array is required" });
+    }
 
-  await Promise.all(updates);
-  res.json({ success: true });
+    const updates = lists.map((list, index) =>
+      prisma.list.update({
+        where: { id: list.id },
+        data: { position: index + 1 }
+      })
+    );
+
+    await Promise.all(updates);
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error reordering lists:", error);
+    res.status(500).json({ error: "Failed to reorder lists" });
+  }
 };
