@@ -112,7 +112,14 @@ export default function List({ list, onAddCard, onCardClick, onUpdateList, onDel
       </div>
 
       {/* Cards */}
-      <div style={{ flex: 1, overflowY: "auto", marginBottom: 8 }}>
+      <div 
+        data-card-container={true}
+        style={{ flex: 1, overflowY: "auto", marginBottom: 8 }}
+        onMouseDown={(e) => {
+          // Stop card container clicks from triggering list drag
+          e.stopPropagation();
+        }}
+      >
         <SortableContext
           items={list.cards.map((card) => card.id)}
           strategy={verticalListSortingStrategy}
