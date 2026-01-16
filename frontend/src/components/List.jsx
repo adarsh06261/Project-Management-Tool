@@ -34,6 +34,7 @@ export default function List({ list, onAddCard, onCardClick, onUpdateList, onDel
 
   return (
     <div
+      data-id={list.id}
       style={{
         width: 272,
         minWidth: 272,
@@ -44,6 +45,10 @@ export default function List({ list, onAddCard, onCardClick, onUpdateList, onDel
         display: "flex",
         flexDirection: "column",
         flexShrink: 0,
+        transition: "background-color 0.2s ease",
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = "#f4f5f7";
       }}
     >
       {/* List Header */}
@@ -112,7 +117,16 @@ export default function List({ list, onAddCard, onCardClick, onUpdateList, onDel
       </div>
 
       {/* Cards */}
-      <div style={{ flex: 1, overflowY: "auto", marginBottom: 8 }}>
+      <div 
+        style={{ 
+          flex: 1, 
+          overflowY: "auto", 
+          marginBottom: 8,
+          minHeight: 40,
+          padding: "4px 0",
+        }}
+        data-drop-zone={list.id}
+      >
         <SortableContext
           items={list.cards.map((card) => card.id)}
           strategy={verticalListSortingStrategy}
@@ -124,6 +138,22 @@ export default function List({ list, onAddCard, onCardClick, onUpdateList, onDel
               onClick={() => onCardClick(card)}
             />
           ))}
+          {list.cards.length === 0 && (
+            <div
+              style={{
+                padding: "20px",
+                textAlign: "center",
+                color: "#6b778c",
+                fontSize: "12px",
+                fontStyle: "italic",
+                border: "2px dashed #dfe1e6",
+                borderRadius: 4,
+                marginTop: 8,
+              }}
+            >
+              Drop cards here
+            </div>
+          )}
         </SortableContext>
       </div>
 
