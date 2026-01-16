@@ -8,8 +8,8 @@ const {
 } = require("../controllers/list.controller");
 
 router.post("/", createList);
+router.put("/reorder", reorderLists); // Must be before /:id route
 router.put("/:id", updateList);
 router.delete("/:id", deleteList);
-router.put("/reorder", reorderLists);
 
 module.exports = router;
