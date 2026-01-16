@@ -19,7 +19,7 @@ function SortableList({ list, onCardClick, onAddCard, onUpdateList, onDeleteList
   } = useSortable({ id: list.id });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: isDragging ? undefined : CSS.Transform.toString(transform),
     transition: isDragging ? undefined : transition,
     opacity: isDragging ? 0.3 : 1,
     cursor: isDragging ? 'grabbing' : 'grab',
@@ -329,7 +329,13 @@ export default function Board({ board, onBoardUpdate }) {
               if (isList) {
                 const list = lists.find((l) => l.id === activeId);
                 return list ? (
-                  <div style={{ width: 272, minWidth: 272, opacity: 0.9 }}>
+                  <div style={{ 
+                    width: 272, 
+                    minWidth: 272, 
+                    opacity: 0.95,
+                    boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
+                    borderRadius: 8,
+                  }}>
                     <List list={list} onCardClick={() => {}} onAddCard={() => {}} onUpdateList={() => {}} onDeleteList={() => {}} />
                   </div>
                 ) : null;
@@ -344,7 +350,11 @@ export default function Board({ board, onBoardUpdate }) {
                   }
                 }
                 return card ? (
-                  <div style={{ width: 256, opacity: 0.9 }}>
+                  <div style={{ 
+                    width: 256, 
+                    opacity: 0.95,
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+                  }}>
                     <Card card={card} onClick={() => {}} />
                   </div>
                 ) : null;
