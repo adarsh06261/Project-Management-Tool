@@ -58,17 +58,44 @@ exports.reorderLists = async (req, res) => {
       return res.status(400).json({ error: "Lists array is required" });
     }
 
-    const updates = lists.map((list, index) =>
-      prisma.list.update({
-        where: { id: list.id },
-        data: { position: index + 1 }
-      })
-    );
+    // Validate all list IDs exist
+    const listIds = lists.map(l => l.id).filter(id => id != null);
+    if (listIds.length === 0) {
+      return res.status(400).json({ error: "No valid list IDs provided" });
+    }
 
-    await Promise.all(updates);
-    res.json({ success: true });
+    // Update lists one by one to handle errors better
+    const updates = [];
+    for (let index = 0; index < lists.length; index++) {
+      const list = lists[index];
+      if (!list.id) {
+        console.warn(`Skipping list at index ${index}: missing id`);
+        continue;
+      }
+      
+      try {
+        await prisma.list.update({
+          where: { id: list.id },
+          data: { position: index + 1 }
+        });
+        updates.push(list.id);
+      } catch (updateError) {
+        console.error(`Error updating list ${list.id}:`, updateError);
+        // Continue with other updates even if one fails
+      }
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ error: "No lists were updated" });
+    }
+
+    res.json({ success: true, updated: updates.length });
   } catch (error) {
     console.error("Error reordering lists:", error);
-    res.status(500).json({ error: "Failed to reorder lists" });
+    console.error("Error details:", error.message, error.code);
+    res.status(500).json({ 
+      error: "Failed to reorder lists",
+      message: error.message 
+    });
   }
 };
